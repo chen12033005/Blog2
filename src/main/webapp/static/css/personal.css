@@ -1,0 +1,128 @@
+header {
+  background-color: #337ab7;
+  min-height: 200px;
+}
+main {
+  /* background-color: #eee; */
+  min-height: 500px;
+  overflow: auto;
+  padding: 30px 20px;
+  font-weight: 500;
+}
+hr {
+  margin-left: 70px;
+  border-top: 1px solid #337ab7;
+}
+.Separator-div {
+  height: 20px;
+  background-color: #353734;
+}
+.base-div {
+  color: #fff;
+  float: left;
+}
+.name {
+  display: block;
+  font-size: 3em;
+  padding: 20px 50px;
+}
+.direction {
+  display: block;
+  padding: 0 50px;
+}
+.detailed-div {
+  color: #fff;
+  float: right;
+}
+.detailed-ul {
+  padding: 20px 50px;
+}
+.text-resume-div {
+  font-size: 5em;
+  clear: both;
+  width: 100%;
+  text-align: center;
+  display: block;
+  color: rgba(231, 223, 218, 1);
+}
+.img-education-div {
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background-color: #337ab7;
+  color: #fff;
+  text-align: center;
+  float: left;
+}
+.text-education-span {
+  line-height: 70px;
+}
+.education-time-span {
+  margin: 20px 50px;
+  color: #5b5656;
+  font-size: 1.1em;
+}
+.education-school-span {
+  font-size: 1.5em;
+  margin: 20px 50px;
+}
+.skill-div {
+  min-height: 70px;
+  overflow: auto;
+}
+.img_circle-skill-div {
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background-color: #337ab7;
+  color: #fff;
+  text-align: center;
+  float: left;
+}
+.img_line-skil-div {
+  width: 1px;
+  margin-left: 35px;
+  background-color: #337ab7;
+  height: 231px;
+  float: left;
+  clear: left;
+}
+.skill-list-div {
+  margin: 0 100px;
+}
+.experience-div {
+  min-height: 70px;
+  overflow: auto;
+}
+.img-experience-div {
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  background-color: #337ab7;
+  color: #fff;
+  text-align: center;
+  float: left;
+}
+.img_line-experience-div {
+  width: 1px;
+  margin-left: 35px;
+  background-color: #337ab7;
+  height: 580px;
+  float: left;
+  clear: left;
+}
+.text-experience-span {
+  line-height: 70px;
+}
+.experience1-div {
+  margin: 0 100px;
+}
+.experience2-div {
+  margin: 0 100px;
+}
+experience2-div p{
+	font-size: 3em;
+}
+.div-p p {
+  margin: 5px 20px;
+}

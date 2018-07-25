@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssm.blog.dao.AlbumDao">
+
+	<resultMap type="Album" id="AlbumResult">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="summary" column="summary"/>
+		<result property="releaseDate" column="releaseDate"/>
+		<result property="albumPhoto" column="albumPhoto"/>
+		<result property="reserve1" column="reserve1"/>
+		<result property="reserve2" column="reserve2"/>
+		<result property="reserve3" column="reserve3"/>
+	</resultMap>
+	
+	<select id="getAlbums" resultMap="AlbumResult">
+		  SELECT id,title,summary,releaseDate,albumPhoto from t_album;
+	</select>
+	
+</mapper> 
