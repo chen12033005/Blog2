@@ -76,14 +76,14 @@
 	<!-- 实例化编辑器 -->
 	<script type="text/javascript">
 		var ue = UE.getEditor('editor');
-		UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+/* 		UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
 	    UE.Editor.prototype.getActionUrl = function(action) {
 	        if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'listimage') {
 	            return '${pageContext.request.contextPath}/blog/ueditorUpload.do';
 	        } else {
 	            return this._bkGetActionUrl.call(this, action);
 	        }
-	    }
+	    } */
 	</script>
 	<script type="text/javascript">
 		function submitData() {

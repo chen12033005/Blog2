@@ -1,7 +1,6 @@
 package ssm.blog.controller;
 
 
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import ssm.blog.entity.Album;
 import ssm.blog.entity.Blogger;
-import ssm.blog.service.AlbumService;
 import ssm.blog.service.BloggerService;
 import ssm.blog.util.CryptographyUtil;
 
@@ -31,9 +28,6 @@ public class BloggerController {
 	
 	@Resource
 	private BloggerService bloggerService;
-	
-	@Resource
-	private AlbumService albumService;
 	
 	@RequestMapping("/login")
 	public String login(Blogger blogger, HttpServletRequest request) {
@@ -65,16 +59,6 @@ public class BloggerController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/myalbum")
-	public ModelAndView myAlbum() {
-		ModelAndView modelAndView = new ModelAndView();
-		List<Album> albums = albumService.getAlbums();
-		
-		modelAndView.addObject("albums",albums);
-		modelAndView.addObject("commonPage", "foreground/blogger/myAlbum.jsp");
-		modelAndView.setViewName("albumMainTemp");
-		return modelAndView;
-	}
 	
 	@RequestMapping("/resource")
 	public ModelAndView resource() {

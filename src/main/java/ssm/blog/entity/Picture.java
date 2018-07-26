@@ -12,6 +12,7 @@ import java.util.Date;
 public class Picture {
 
 	private int id;//图片id
+	private String pictureName;//图片名称
 	private int albumId;//图片所属相册
 	private int orderNum;//图片排序
 	private float height;//图片高度
@@ -82,9 +83,18 @@ public class Picture {
 	public void setReserve3(String reserve3) {
 		this.reserve3 = reserve3;
 	}
+	public String getPictureName() {
+		return pictureName;
+	}
+	public void setPictureName(String pictureName) {
+		this.pictureName = pictureName;
+	}
 	@Override
 	public String toString() {
-		return "Picture [id=" + id + ", albumId=" + albumId + ", orderNum=" + orderNum + ", height=" + height + ", width=" + width + ", releaseDate=" + releaseDate + ", updateDate=" + updateDate + ", reserve1=" + reserve1 + ", reserve2=" + reserve2 + ", reserve3=" + reserve3 + "]";
+		return "Picture [id=" + id + ", pictureName=" + pictureName + ", albumId=" + albumId + ", orderNum=" + orderNum + ", height=" + height + ", width=" + width + ", releaseDate=" + releaseDate + ", updateDate=" + updateDate + ", reserve1=" + reserve1 + ", reserve2=" + reserve2 + ", reserve3=" + reserve3 + ", getId()=" + getId() + ", getAlbumId()=" + getAlbumId() + ", getOrderNum()="
+				+ getOrderNum() + ", getHeight()=" + getHeight() + ", getWidth()=" + getWidth() + ", getReleaseDate()=" + getReleaseDate() + ", getUpdateDate()=" + getUpdateDate() + ", getReserve1()=" + getReserve1() + ", getReserve2()=" + getReserve2() + ", getReserve3()=" + getReserve3() + ", getPictureName()=" + getPictureName() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ ", toString()=" + super.toString() + "]";
 	}
+	
 	
 }

@@ -21,7 +21,7 @@
 	      <ul class="nav navbar-nav">
 	      	<li><a class="navbar-brand" href="${pageContext.request.contextPath}/index.html" onclick="changeClass(this)">博客首页</a></li>
 	        <li><a class="navbar-brand" href="${pageContext.request.contextPath}/blogger/aboutme.html" onclick="changeClass(this)">博主简历</a></li>
-	        <li><a class="navbar-brand" href="${pageContext.request.contextPath}/blogger/myalbum.html" onclick="changeClass(this)">我的相册</a></li>
+	        <li><a class="navbar-brand" href="${pageContext.request.contextPath}/album/myalbum.html" onclick="changeClass(this)">我的相册</a></li>
 	        <li><a class="navbar-brand" href="${pageContext.request.contextPath}/blogger/resource.html" onclick="changeClass(this)">资源小站</a></li>
 	        <!-- <li><a class="navbar-brand" href="#" target="blank">我的CSDN</a></li> -->
 	      </ul>
