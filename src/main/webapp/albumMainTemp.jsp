@@ -53,28 +53,7 @@
 	</div>
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<div class="row">
-			<c:forEach items="${albums}" var="album">
-			<a href='${pageContext.request.contextPath}/foreground/blogger/myAlbumList.jsp'>
-				 <div class="col-md-4">
-					<div class="thumbnail" >
-						<img alt="300x200" src="${pageContext.request.contextPath}${album.albumPhoto }" />
-						<div class="caption" >
-							<h3>
-								${album.title }
-							</h3>
-							<p class="miaoshu">
-								${album.summary }
-							</p>
-							<!-- <p>
-								 <a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
-							</p> -->
-						</div>
-					</div>
-				</div>
-				</a>	
-			</c:forEach>
-			</div>
+			<jsp:include page="${commonPage }"/>
 		</div>
 	</div>
 </div>

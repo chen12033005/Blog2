@@ -71,6 +71,7 @@ CREATE TABLE `t_album` (
 
 CREATE TABLE `t_pictures` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'Õº∆¨id',
+   `picture_name` VARCHAR(60) DEFAULT NULL COMMENT 'œ‡≤·Àı¬‘Õº',
   `album_id` INT(11) DEFAULT NULL COMMENT 'Õº∆¨À˘ Ùœ‡≤·',
   `orderNum` INT(11) DEFAULT NULL COMMENT 'Õº∆¨≈≈–Ú',
   `height` float(11) DEFAULT NULL COMMENT 'Õº∆¨∏ﬂ∂»',

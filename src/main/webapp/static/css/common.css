@@ -12,6 +12,7 @@ img {
 .success {
     -webkit-animation: fadeIn 01s ease 0.2s 1 both;
     animation: fadeIn 1s ease 0.2s 1 both;
+    margin-top: 15;
 }
 
 @-webkit-keyframes fadeIn {
