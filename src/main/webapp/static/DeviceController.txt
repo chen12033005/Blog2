@@ -50,6 +50,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+
 import com.yihuacomputer.common.FishCfg;
 import com.yihuacomputer.common.FishConstant;
 import com.yihuacomputer.common.IFilter;
@@ -104,7 +105,7 @@ import com.yihuacomputer.fish.web.basic.format.person.PersonForm;
 import com.yihuacomputer.fish.web.util.DownFromWebUtils;
 
 /**
- * 设备信息 Controller类
+ * 璁惧淇℃伅 Controller绫�
  * 
  * @author liubo
  * @E-mail liubo-nj@yihuacomputer
@@ -117,7 +118,7 @@ public class DeviceController {
 	private Logger logger = LoggerFactory.getLogger(DeviceController.class);
 
 	/**
-	 * 设备接口
+	 * 璁惧鎺ュ彛
 	 */
 	@Autowired
 	private IDeviceService deviceService;
@@ -126,13 +127,13 @@ public class DeviceController {
 	private IDeviceExtendService deviceExtendService;
 
 	/**
-	 * 机构接口
+	 * 鏈烘瀯鎺ュ彛
 	 */
 	@Autowired
 	private IOrganizationService orgService;
 
 	/**
-	 * 型号接口
+	 * 鍨嬪彿鎺ュ彛
 	 */
 	@Autowired
 	private IAtmTypeService typeService;
@@ -165,7 +166,7 @@ public class DeviceController {
 	
 
 	/**
-	 * 下载导入文件模板：
+	 * 涓嬭浇瀵煎叆鏂囦欢妯℃澘锛�
 	 */
 	@RequestMapping(value = "/downloadMould", method = RequestMethod.GET)
 	public void downloadMould(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -201,50 +202,50 @@ public class DeviceController {
 	}
 
 	/**
-	 * 设备信息导入
+	 * 璁惧淇℃伅瀵煎叆
 	 */
 	@RequestMapping(value = "/importMould", method = RequestMethod.POST)
 	@ResponseBody
 	public String importMould(HttpServletRequest request, HttpServletResponse response, HttpServletRequest req) {
-		response.setContentType("text/html;charset=UTF-8");// 解决IE9 上传文件乱码问题
+		response.setContentType("text/html;charset=UTF-8");// 瑙ｅ喅IE9 涓婁紶鏂囦欢涔辩爜闂
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		List<MultipartFile> files = multipartRequest.getFiles("file");
 		MultipartFile file = files.get(0);
 		if (!file.getOriginalFilename().isEmpty() && file.getSize() > 10485760) {
-			return "{'success':false,'content':'超过最大文件大小限制（最大10M）'}";
+			return "{'success':false,'content':'瓒呰繃鏈�澶ф枃浠跺ぇ灏忛檺鍒讹紙鏈�澶�10M锛�'}";
 		}
 		String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
 		if (!((file.getOriginalFilename().equals("jsnx_device.xls")) || (file.getOriginalFilename().equals("jsnx_device.xlsx")))) {
-			return "{'success':false,'content':'模板格式或名称不正确，请使用模板文件导入！'}";
+			return "{'success':false,'content':'妯℃澘鏍煎紡鎴栧悕绉颁笉姝ｇ‘锛岃浣跨敤妯℃澘鏂囦欢瀵煎叆锛�'}";
 		}
-		// 用于记录重复的终端号
+		// 鐢ㄤ簬璁板綍閲嶅鐨勭粓绔彿
 		String terminalIdStr = "";
-		// 用于记录成功的行数
+		// 鐢ㄤ簬璁板綍鎴愬姛鐨勮鏁�
 		int successRows = 0;
-		// excel表中总行数
+		// excel琛ㄤ腑鎬昏鏁�
 		int allRows = 0;
-		// 用于记录重复未导入的行数
+		// 鐢ㄤ簬璁板綍閲嶅鏈鍏ョ殑琛屾暟
 		int repeat = 0;
-		// 用于存放验证成功的设备
+		// 鐢ㄤ簬瀛樻斁楠岃瘉鎴愬姛鐨勮澶�
 		List<IDevice> devices = new ArrayList<IDevice>();
 		Workbook xls = null;
 		if (!file.getOriginalFilename().isEmpty()) {
 			try {
 				File readFile = new File(FishCfg.getTempDir() + System.getProperty("file.separator") + UUID.randomUUID());
 				file.transferTo(readFile);
-				// 从excel文件解析数据：
+				// 浠巈xcel鏂囦欢瑙ｆ瀽鏁版嵁锛�
 				if (fileType.equals(".xls")) {
-					xls = new HSSFWorkbook(new FileInputStream(readFile));// 指定文件
+					xls = new HSSFWorkbook(new FileInputStream(readFile));// 鎸囧畾鏂囦欢
 				} else if (fileType.equals(".xlsx")) {
-					xls = new XSSFWorkbook(new FileInputStream(readFile));// 指定文件
+					xls = new XSSFWorkbook(new FileInputStream(readFile));// 鎸囧畾鏂囦欢
 				} else {
-					return "{'success':false,'content':'文件类型不符合要求'}";
+					return "{'success':false,'content':'鏂囦欢绫诲瀷涓嶇鍚堣姹�'}";
 				}
 				Sheet sheet = xls.getSheetAt(0);
-				int rows = sheet.getPhysicalNumberOfRows();// 行数
+				int rows = sheet.getPhysicalNumberOfRows();// 琛屾暟
 				allRows = rows;
 				if (rows <= 1) {
-					return "{'success':false,'content':'文件内容不能为空！请检查！'}";
+					return "{'success':false,'content':'鏂囦欢鍐呭涓嶈兘涓虹┖锛佽妫�鏌ワ紒'}";
 				}
 
 				for (int r = 1; r < rows; r++) {
@@ -323,19 +324,19 @@ public class DeviceController {
 					Cell serCell65 = (Cell) row.getCell(65);
 					Cell serCell66 = (Cell) row.getCell(66);
 
-					// 验证必填项是否为空
+					// 楠岃瘉蹇呭～椤规槸鍚︿负绌�
 					if (serCell0 == null || serCell1 == null || serCell2 == null || serCell3 == null || serCell4 == null || serCell5 == null || serCell6 == null || serCell7 == null || serCell8 == null || serCell9 == null || serCell10 == null || serCell11 == null || serCell12 == null || serCell13 == null || serCell14 == null || serCell15 == null || serCell16 == null || serCell17 == null
 							|| serCell18 == null || serCell19 == null) {
-						return "{'success':false,'content':'文件中" + (r + 1) + "行标记绿的列存在空项！请检查！'}";
+						return "{'success':false,'content':'鏂囦欢涓�" + (r + 1) + "琛屾爣璁扮豢鐨勫垪瀛樺湪绌洪」锛佽妫�鏌ワ紒'}";
 					}
 
-					// 终端号
+					// 缁堢鍙�
 					String terminalId = changeToString(serCell1);
 					String regex4 = "[a-zA-Z0-9]{8}+$";
 					if (!isMate(regex4, terminalId)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[终端号]由8位数字‘0-9’或者字母‘a-zA-Z’组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁堢鍙穄鐢�8浣嶆暟瀛椻��0-9鈥欐垨鑰呭瓧姣嶁�榓-zA-Z鈥欑粍鎴愶紝璇锋鏌ワ紒'}";
 					}
-					// 如果该终端号已经对应了设备，我们则认为这是一条重复的数据，不做处理
+					// 濡傛灉璇ョ粓绔彿宸茬粡瀵瑰簲浜嗚澶囷紝鎴戜滑鍒欒涓鸿繖鏄竴鏉￠噸澶嶇殑鏁版嵁锛屼笉鍋氬鐞�
 					IDevice checkDevice = deviceService.get(terminalId);
 					if (null != checkDevice) {
 						terminalIdStr += terminalId + ",";
@@ -343,53 +344,53 @@ public class DeviceController {
 						continue;
 					}
 
-					// 虚拟柜员号
+					// 铏氭嫙鏌滃憳鍙�
 					String virtual = changeToString(serCell0);
 					if (virtual.length() > 12) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[虚拟柜员号]超出最大长度限制(12位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾铏氭嫙鏌滃憳鍙穄瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(12浣�)锛岃妫�鏌ワ紒'}";
 					}
 					String regex = "^[0-9][0-9A-Z]+$";
 					if (!isMate(regex, virtual)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[虚拟柜员号]由数字‘0-9’、字母‘A-Z’,只能以数字开头，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾铏氭嫙鏌滃憳鍙穄鐢辨暟瀛椻��0-9鈥欍�佸瓧姣嶁�楢-Z鈥�,鍙兘浠ユ暟瀛楀紑澶达紝璇锋鏌ワ紒'}";
 					}
 					String virtualOrg = virtual.substring(0, 9);
 					IOrganization deviceOrg = orgService.getByCode(virtualOrg);
 					if (deviceOrg == null) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[虚拟柜员号]对应的机构不存在，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾铏氭嫙鏌滃憳鍙穄瀵瑰簲鐨勬満鏋勪笉瀛樺湪锛岃妫�鏌ワ紒'}";
 					}
-					// 查询本地是否有虚拟柜员号信息。
+					// 鏌ヨ鏈湴鏄惁鏈夎櫄鎷熸煖鍛樺彿淇℃伅銆�
 					IDevice devVir = deviceService.getByVirtual(virtual);
 					if (devVir != null) {
 						if (devVir.getStatus() == Status.SCRAPPED) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[虚拟柜员号]信息已经报废，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾铏氭嫙鏌滃憳鍙穄淇℃伅宸茬粡鎶ュ簾锛岃妫�鏌ワ紒'}";
 						} else {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[虚拟柜员号]信息已存在，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾铏氭嫙鏌滃憳鍙穄淇℃伅宸插瓨鍦紝璇锋鏌ワ紒'}";
 						}
 					}
 
-					// orgCode：机构码 orgName：机构名称
+					// orgCode锛氭満鏋勭爜 orgName锛氭満鏋勫悕绉�
 					String orgCode = changeToString(serCell2);
 					String orgName = changeToString(serCell3);
 					IOrganization organization = orgService.getByCode(orgCode);
 					if (organization != null) {
 						if (!(orgName.equals(organization.getName()))) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行中[机构码]和[机构名称]不匹配，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛屼腑[鏈烘瀯鐮乚鍜孾鏈烘瀯鍚嶇О]涓嶅尮閰嶏紝璇锋鏌ワ紒'}";
 						}
 						if (organization.getOrganizationState() != OrganizationState.START) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行中[机构名称]为" + orgName + "的机构不是启用状态，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛屼腑[鏈烘瀯鍚嶇О]涓�" + orgName + "鐨勬満鏋勪笉鏄惎鐢ㄧ姸鎬侊紝璇锋鏌ワ紒'}";
 						}
 					} else {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行中不存在[机构码]为" + orgCode + "的机构，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛屼腑涓嶅瓨鍦╗鏈烘瀯鐮乚涓�" + orgCode + "鐨勬満鏋勶紝璇锋鏌ワ紒'}";
 					}
 
-					// 设备型号
+					// 璁惧鍨嬪彿
 					String str4 = changeToString(serCell4);
 					IAtmType atmType = typeService.get(str4);
 					if (atmType == null) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备型号]不存在，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍨嬪彿]涓嶅瓨鍦紝璇锋鏌ワ紒'}";
 					}
 
-					// 设备Ip
+					// 璁惧Ip
 					String str5 = changeToString(serCell5);
 					String[] ips = str5.split("\\.");
 					if (ips.length == 4) {
@@ -397,152 +398,152 @@ public class DeviceController {
 							try {
 								int checkip = Integer.parseInt(ips[i]);
 								if (checkip < 0 || checkip > 255) {
-									return "{'success':false,'content':'文件第" + (r + 1) + "行[设备ip地址]数字不能小于0大于255,请检查！'}";
+									return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧ip鍦板潃]鏁板瓧涓嶈兘灏忎簬0澶т簬255,璇锋鏌ワ紒'}";
 								} else if (deviceService.getByIp(str5) != null) {
-									return "{'success':false,'content':'文件第" + (r + 1) + "行[设备ip地址]已经被其他设备占用,请检查！'}";
+									return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧ip鍦板潃]宸茬粡琚叾浠栬澶囧崰鐢�,璇锋鏌ワ紒'}";
 								}
 							} catch (NumberFormatException e) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[设备ip地址]只能由数字和点组合,请检查！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧ip鍦板潃]鍙兘鐢辨暟瀛楀拰鐐圭粍鍚�,璇锋鏌ワ紒'}";
 							}
 						}
 					} else {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备ip地址]输入有误,请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧ip鍦板潃]杈撳叆鏈夎,璇锋鏌ワ紒'}";
 					}
 					ITypeIP ip = new IP(str5);
 
-					// 银联地区标识码
+					// 閾惰仈鍦板尯鏍囪瘑鐮�
 					String obCode = changeToString(serCell6);
 					String regex5 = "[0-9]{8}+$";
 					if (!isMate(regex5, obCode)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[银联地区标识码]由8位数字‘0-9’组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾閾惰仈鍦板尯鏍囪瘑鐮乚鐢�8浣嶆暟瀛椻��0-9鈥欑粍鎴愶紝璇锋鏌ワ紒'}";
 					}
 
-					// MAC地址
+					// MAC鍦板潃
 					String mac = changeToString(serCell7);
 					if (deviceService.getByMac(mac) != null) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[MAC地址]已经被其他设备使用,请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾MAC鍦板潃]宸茬粡琚叾浠栬澶囦娇鐢�,璇锋鏌ワ紒'}";
 					}
 					String regex2 = "^[a-fA-F0-9]{2}-[a-fA-F0-9]{2}-[a-fA-F0-9]{2}-[a-fA-F0-9]{2}-[a-fA-F0-9]{2}-[a-fA-F0-9]{2}+$";
 					if (!isMate(regex2, mac)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[MAC地址]输入不符合规范，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾MAC鍦板潃]杈撳叆涓嶇鍚堣鑼冿紝璇锋鏌ワ紒'}";
 					}
 					deviceExtend.setMac(mac);
 
-					// 设备地址
+					// 璁惧鍦板潃
 					String address = changeToString(serCell8);
 					if (address.length() > 30) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备地址]输入超过最大长度30，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍦板潃]杈撳叆瓒呰繃鏈�澶ч暱搴�30锛岃妫�鏌ワ紒'}";
 					}
 					device.setAddress(address);
 
-					// 设备维保商
+					// 璁惧缁翠繚鍟�
 					String str9 = changeToString(serCell9);
 					IOrganization devService = null;
 					try {
 						devService = orgService.getByName(str9);
 					} catch (NotFoundException e1) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备维保商]不存在，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧缁翠繚鍟哴涓嶅瓨鍦紝璇锋鏌ワ紒'}";
 					}
 
-					// 设备序列号
+					// 璁惧搴忓垪鍙�
 					String serial = changeToString(serCell10);
 					if (!serial.isEmpty()) {
 						String regexSerial = "^[0-9a-zA-Z][0-9a-zA-Z-_.]+$";
 						if (!isMate(regexSerial, serial)) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备序列号]由字母‘a-z’或‘A-Z’、数字‘0-9’、减号‘-’、下划线‘_’和点号‘.’，只能以字母或数字开头，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧搴忓垪鍙穄鐢卞瓧姣嶁�榓-z鈥欐垨鈥楢-Z鈥欍�佹暟瀛椻��0-9鈥欍�佸噺鍙封��-鈥欍�佷笅鍒掔嚎鈥榑鈥欏拰鐐瑰彿鈥�.鈥欙紝鍙兘浠ュ瓧姣嶆垨鏁板瓧寮�澶达紝璇锋鏌ワ紒'}";
 						}
 					}
 
-					// 所属省级区划代码
+					// 鎵�灞炵渷绾у尯鍒掍唬鐮�
 					String provDivisionCd = changeToString(serCell11);
 					String regexDivisionCd = "^[0-9]{6}+$";
 					if (!isMate(regexDivisionCd, provDivisionCd)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[所属省级区划代码]由6位数字组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎵�灞炵渷绾у尯鍒掍唬鐮乚鐢�6浣嶆暟瀛楃粍鎴愶紝璇锋鏌ワ紒'}";
 					}
 
-					// 所属市级区划代码
+					// 鎵�灞炲競绾у尯鍒掍唬鐮�
 					String cityDivisionCd = changeToString(serCell12);
 					if (!isMate(regexDivisionCd, cityDivisionCd)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[所属市级区划代码]由6位数字组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎵�灞炲競绾у尯鍒掍唬鐮乚鐢�6浣嶆暟瀛楃粍鎴愶紝璇锋鏌ワ紒'}";
 					}
 
-					// 所属区级区划代码
+					// 鎵�灞炲尯绾у尯鍒掍唬鐮�
 					String areaDivisionCd = changeToString(serCell13);
 					if (!isMate(regexDivisionCd, areaDivisionCd)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[所属区级区划代码]由6位数字组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎵�灞炲尯绾у尯鍒掍唬鐮乚鐢�6浣嶆暟瀛楃粍鎴愶紝璇锋鏌ワ紒'}";
 					}
 
-					// 邮政编码
+					// 閭斂缂栫爜
 					String zipCd = changeToString(serCell14);
 					String regexZipCd = "^[0-9]{6}+$";
 					if (!isMate(regexZipCd, zipCd)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[邮政编码]由6位数字组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾閭斂缂栫爜]鐢�6浣嶆暟瀛楃粍鎴愶紝璇锋鏌ワ紒'}";
 					}
 
-					// 部署区域特征
+					// 閮ㄧ讲鍖哄煙鐗瑰緛
 					String deployAreaChara = changeToString(serCell15);
 					String regexDeployAreaChara = "^[0][1-8]{1}+$";
 					if (!isMate(regexDeployAreaChara, deployAreaChara)) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[部署区域特征]由2位数字[01、02、03、04、05、06、07、08]组成，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾閮ㄧ讲鍖哄煙鐗瑰緛]鐢�2浣嶆暟瀛梉01銆�02銆�03銆�04銆�05銆�06銆�07銆�08]缁勬垚锛岃妫�鏌ワ紒'}";
 					}
 
-					// 联接方式
+					// 鑱旀帴鏂瑰紡
 					String connMd = changeToString(serCell16);
 					if (!("I".equals(connMd) || "S".equals(connMd))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[联接方式]只能输入[I]或[S]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鑱旀帴鏂瑰紡]鍙兘杈撳叆[I]鎴朳S]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 操作系统版本
+					// 鎿嶄綔绯荤粺鐗堟湰
 					String osVersion = changeToString(serCell17);
 					if (osVersion.length() > 20) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[操作系统版本]超出最大长度限制(20位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎿嶄綔绯荤粺鐗堟湰]瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(20浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 软件版本号
+					// 杞欢鐗堟湰鍙�
 					String softVersion = changeToString(serCell18);
 					if (softVersion.length() > 30) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[软件版本号]超出最大长度限制(30位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾杞欢鐗堟湰鍙穄瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(30浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 设备状态
+					// 璁惧鐘舵��
 					Status devStatus = null;
 					if (changeToString(serCell19).indexOf('(') == -1) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备状态]输入有误,请输入正确形式！例：[3(启用)]。！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鐘舵�乚杈撳叆鏈夎,璇疯緭鍏ユ纭舰寮忥紒渚嬶細[3(鍚敤)]銆傦紒'}";
 					} else {
 						String str11 = changeToString(serCell19).substring(0, changeToString(serCell19).indexOf('('));
 						String regexNumble = "^[0-9]{1,2}";
 						if (!isMate(regexNumble, str11)) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备状态]输入有误,请输入正确形式！例：[3(启用)]。'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鐘舵�乚杈撳叆鏈夎,璇疯緭鍏ユ纭舰寮忥紒渚嬶細[3(鍚敤)]銆�'}";
 						}
 						devStatus = Status.getById(Integer.parseInt(str11));
 					}
 
-					// 是否在行
+					// 鏄惁鍦ㄨ
 					AwayFlag awayFlag = null;
-					// 如果为空则给它一个默认值，否则判断值的合法性
+					// 濡傛灉涓虹┖鍒欑粰瀹冧竴涓粯璁ゅ�硷紝鍚﹀垯鍒ゆ柇鍊肩殑鍚堟硶鎬�
 					if (changeToString(serCell20).isEmpty()) {
 						awayFlag = AwayFlag.FROM_THE_LINE;
 					} else {
 						if (changeToString(serCell20).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[是否在行]输入有误,只能输入[1(在行自助服务区)]或者[2(离行自助银行)]或者[3(单机离行自助服务点)]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鏄惁鍦ㄨ]杈撳叆鏈夎,鍙兘杈撳叆[1(鍦ㄨ鑷姪鏈嶅姟鍖�)]鎴栬�匸2(绂昏鑷姪閾惰)]鎴栬�匸3(鍗曟満绂昏鑷姪鏈嶅姟鐐�)]锛�'}";
 						} else {
 							String str11 = changeToString(serCell20).substring(0, changeToString(serCell20).indexOf('('));
 							if (!("1".equals(str11) || "2".equals(str11) || "3".equals(str11))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[是否在行]输入有误,只能输入[1(在行自助服务区)]或者[2(离行自助银行)]或者[3(单机离行自助服务点)]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鏄惁鍦ㄨ]杈撳叆鏈夎,鍙兘杈撳叆[1(鍦ㄨ鑷姪鏈嶅姟鍖�)]鎴栬�匸2(绂昏鑷姪閾惰)]鎴栬�匸3(鍗曟満绂昏鑷姪鏈嶅姟鐐�)]锛�'}";
 							}
 							awayFlag = AwayFlag.getById(Integer.parseInt(str11));
 						}
 					}
 
-					// 安装方式
+					// 瀹夎鏂瑰紡
 					SetupType setupType = null;
 					if (!changeToString(serCell21).isEmpty()) {
 						if (changeToString(serCell21).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[是否在行]输入有误,只能输入[1(在行自助服务区)]或者[2(离行自助银行)]或者[3(单机离行自助服务点)]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鏄惁鍦ㄨ]杈撳叆鏈夎,鍙兘杈撳叆[1(鍦ㄨ鑷姪鏈嶅姟鍖�)]鎴栬�匸2(绂昏鑷姪閾惰)]鎴栬�匸3(鍗曟満绂昏鑷姪鏈嶅姟鐐�)]锛�'}";
 						} else {
 							String str14 = changeToString(serCell21).substring(0, changeToString(serCell21).indexOf('('));
 							if (!str14.isEmpty() && !("0".equals(str14) || "1".equals(str14))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[安装方式]输入有误,只能输入[0(穿墙)]或者[1（大堂）]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾瀹夎鏂瑰紡]杈撳叆鏈夎,鍙兘杈撳叆[0(绌垮)]鎴栬�匸1锛堝ぇ鍫傦級]锛�'}";
 							}
 							setupType = SetupType.getById(Integer.parseInt(str14));
 						}
@@ -550,15 +551,15 @@ public class DeviceController {
 						setupType = SetupType.WEAR_WALL;
 					}
 
-					// 经营方式
+					// 缁忚惀鏂瑰紡
 					WorkType workType = null;
 					if (!changeToString(serCell22).isEmpty()) {
 						if (changeToString(serCell22).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[经营方式]输入有误,只能输入[1(自营)]或者[2(合作)]或者[3(外包)]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁忚惀鏂瑰紡]杈撳叆鏈夎,鍙兘杈撳叆[1(鑷惀)]鎴栬�匸2(鍚堜綔)]鎴栬�匸3(澶栧寘)]锛�'}";
 						} else {
 							String str15 = changeToString(serCell22).substring(0, changeToString(serCell22).indexOf('('));
 							if (!str15.isEmpty() && !("1".equals(str15) || "2".equals(str15) || "3".equals(str15))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[经营方式]输入有误,只能输入[1(自营)]或者[2(合作)]或者[3(外包)]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁忚惀鏂瑰紡]杈撳叆鏈夎,鍙兘杈撳叆[1(鑷惀)]鎴栬�匸2(鍚堜綔)]鎴栬�匸3(澶栧寘)]锛�'}";
 							}
 							workType = WorkType.getById(Integer.parseInt(str15));
 						}
@@ -566,48 +567,48 @@ public class DeviceController {
 						workType = WorkType.FROM_OPERATING;
 					}
 
-					// 开机时间
+					// 寮�鏈烘椂闂�
 					String openTime = changeToString(serCell23);
 					if (openTime.isEmpty()) {
 						deviceExtend.setOpenTime("00:00:00");
 					} else {
 						if (!checkTime(openTime)) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[开机时间]输入不符合时间格式，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾寮�鏈烘椂闂碷杈撳叆涓嶇鍚堟椂闂存牸寮忥紝璇锋鏌ワ紒'}";
 						}
 						deviceExtend.setOpenTime(openTime);
 					}
 
-					// 关机时间
+					// 鍏虫満鏃堕棿
 					String closeTime = changeToString(serCell24);
 					if (closeTime.isEmpty()) {
 						deviceExtend.setCloseTime("23:59:59");
 					} else {
 						if (!checkTime(closeTime)) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[关机时间]输入不符合时间格式，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鍏虫満鏃堕棿]杈撳叆涓嶇鍚堟椂闂存牸寮忥紝璇锋鏌ワ紒'}";
 						}
 						deviceExtend.setCloseTime(closeTime);
 					}
 
-					// 是否支持视频播放
+					// 鏄惁鏀寔瑙嗛鎾斁
 					String videoType = changeToString(serCell25);
 					if (videoType != "") {
 						if (!("0".equals(videoType) || "1".equals(videoType))) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[是否支持视频播放]输入有误,只能输入0或1,请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鏄惁鏀寔瑙嗛鎾斁]杈撳叆鏈夎,鍙兘杈撳叆0鎴�1,璇锋鏌ワ紒'}";
 						}
 						deviceExtend.setVideoType(videoType);
 					} else {
 						deviceExtend.setVideoType("0");
 					}
 
-					// 设备关注程度
+					// 璁惧鍏虫敞绋嬪害
 					CareLevel careLevel = null;
 					if (!changeToString(serCell26).isEmpty()) {
 						if (changeToString(serCell26).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备关注程度]输入有误,只能输入[1(重点)]、[2（中等）]或者[3(一般)]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍏虫敞绋嬪害]杈撳叆鏈夎,鍙兘杈撳叆[1(閲嶇偣)]銆乕2锛堜腑绛夛級]鎴栬�匸3(涓�鑸�)]锛�'}";
 						} else {
 							String str20 = changeToString(serCell26).substring(0, changeToString(serCell26).indexOf('('));
 							if (!str20.isEmpty() && !("1".equals(str20) || "2".equals(str20) || "3".equals(str20))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[设备关注程度]输入有误,只能输入[1(重点)]、[2（中等）]或者[3(一般)]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍏虫敞绋嬪害]杈撳叆鏈夎,鍙兘杈撳叆[1(閲嶇偣)]銆乕2锛堜腑绛夛級]鎴栬�匸3(涓�鑸�)]锛�'}";
 							}
 							careLevel = CareLevel.getById(Integer.parseInt(str20));
 						}
@@ -615,50 +616,50 @@ public class DeviceController {
 						careLevel = CareLevel.EMPHASIS;
 					}
 
-					// 非现金标志
+					// 闈炵幇閲戞爣蹇�
 					CashType cashType = null;
-					// 如果为空则给它一个默认值，否则判断值的合法性
+					// 濡傛灉涓虹┖鍒欑粰瀹冧竴涓粯璁ゅ�硷紝鍚﹀垯鍒ゆ柇鍊肩殑鍚堟硶鎬�
 					if (changeToString(serCell27).isEmpty()) {
 						cashType = CashType.CASH;
 					} else {
 						if (changeToString(serCell27).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[非现金标志]输入有误,只能输入[1（现金）]或者[2（非现金）]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾闈炵幇閲戞爣蹇梋杈撳叆鏈夎,鍙兘杈撳叆[1锛堢幇閲戯級]鎴栬�匸2锛堥潪鐜伴噾锛塢锛�'}";
 						} else {
 							String str10 = changeToString(serCell27).substring(0, changeToString(serCell27).indexOf('('));
 							if (!("1".equals(str10) || "2".equals(str10))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[非现金标志]输入有误,只能输入[1（现金）]或者[2（非现金）]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾闈炵幇閲戞爣蹇梋杈撳叆鏈夎,鍙兘杈撳叆[1锛堢幇閲戯級]鎴栬�匸2锛堥潪鐜伴噾锛塢锛�'}";
 							}
 							cashType = CashType.getById(Integer.parseInt(str10));
 						}
 					}
 
-					// atmc软件
+					// atmc杞欢
 					String atmcSoft = changeToString(serCell28);
 					if (atmcSoft.length() > 50) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[atmc软件]文本长度不能超过50，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾atmc杞欢]鏂囨湰闀垮害涓嶈兘瓒呰繃50锛岃妫�鏌ワ紒'}";
 					}
 
-					// 加钞机构
+					// 鍔犻挒鏈烘瀯
 					String moneyOrg = changeToString(serCell29);
 					if (moneyOrg.length() > 20) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[加钞机构]文本长度不能超过20位，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鍔犻挒鏈烘瀯]鏂囨湰闀垮害涓嶈兘瓒呰繃20浣嶏紝璇锋鏌ワ紒'}";
 					}
 
-					// 厂商sp类型
+					// 鍘傚晢sp绫诲瀷
 					String sp = changeToString(serCell30);
 					if (sp.length() > 50) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[厂商sp类型]文本长度不能超过50位，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鍘傚晢sp绫诲瀷]鏂囨湰闀垮害涓嶈兘瓒呰繃50浣嶏紝璇锋鏌ワ紒'}";
 					}
 
-					// 存放位置类型
+					// 瀛樻斁浣嶇疆绫诲瀷
 					PlaceType placeType = null;
 					if (!changeToString(serCell31).isEmpty()) {
 						if (changeToString(serCell31).indexOf('(') == -1) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[布放位置类型]输入有误,只能输入[1(省会城市)]、[2（地级市）]、[3(县城)]、[4(乡镇)或[5(行政（自然）村)]]！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾甯冩斁浣嶇疆绫诲瀷]杈撳叆鏈夎,鍙兘杈撳叆[1(鐪佷細鍩庡競)]銆乕2锛堝湴绾у競锛塢銆乕3(鍘垮煄)]銆乕4(涔￠晣)鎴朳5(琛屾斂锛堣嚜鐒讹級鏉�)]]锛�'}";
 						} else {
 							String str25 = changeToString(serCell31).substring(0, changeToString(serCell31).indexOf('('));
 							if (!str25.isEmpty() && !("1".equals(str25) || "2".equals(str25) || "3".equals(str25) || "4".equals(str25) || "5".equals(str25))) {
-								return "{'success':false,'content':'文件第" + (r + 1) + "行[布放位置类型]输入有误,只能输入[1(省会城市)]、[2（地级市）]、[3(县城)]、[4(乡镇)或[5(行政（自然）村)]]！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾甯冩斁浣嶇疆绫诲瀷]杈撳叆鏈夎,鍙兘杈撳叆[1(鐪佷細鍩庡競)]銆乕2锛堝湴绾у競锛塢銆乕3(鍘垮煄)]銆乕4(涔￠晣)鎴朳5(琛屾斂锛堣嚜鐒讹級鏉�)]]锛�'}";
 							}
 							placeType = PlaceType.getById(Integer.parseInt(str25));
 						}
@@ -666,291 +667,291 @@ public class DeviceController {
 						placeType = PlaceType.PRO_CAP;
 					}
 
-					// 管理员电话
+					// 绠＄悊鍛樼數璇�
 					String managerPhone = changeToString(serCell32);
 					String regex6 = "^[0-9]{8,11}";
 					if (!isMate(regex6, managerPhone) && !managerPhone.isEmpty()) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[管理员电话]只能输入8-11位数字，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾绠＄悊鍛樼數璇漖鍙兘杈撳叆8-11浣嶆暟瀛楋紝璇锋鏌ワ紒'}";
 					}
 
-					// 管理员姓名
+					// 绠＄悊鍛樺鍚�
 					String managerName = changeToString(serCell33);
 					if (managerPhone.length() > 10) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[管理员姓名]文本长度不能超过10，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾绠＄悊鍛樺鍚峕鏂囨湰闀垮害涓嶈兘瓒呰繃10锛岃妫�鏌ワ紒'}";
 					}
 
-					// 设备购买日期
+					// 璁惧璐拱鏃ユ湡
 					String buyDate = changeToString(serCell34);
 					if (!buyDate.isEmpty()) {
 						try {
 							deviceExtend.setBuyDate(DateUtils.getDate(buyDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备购买日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧璐拱鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 设备安装日期
+					// 璁惧瀹夎鏃ユ湡
 					String installDate = changeToString(serCell35);
 					if (!installDate.isEmpty()) {
 						try {
 							deviceExtend.setInstallDate(DateUtils.getDate(installDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备安装日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧瀹夎鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 设备启用日期
+					// 璁惧鍚敤鏃ユ湡
 					String startDate = changeToString(serCell36);
 					if (!startDate.isEmpty()) {
 						try {
 							deviceExtend.setStartDate(DateUtils.getDate(startDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备启用日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍚敤鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 设备停用日期
+					// 璁惧鍋滅敤鏃ユ湡
 					String stopDate = changeToString(serCell37);
 					if (!stopDate.isEmpty()) {
 						try {
 							deviceExtend.setStopDate(DateUtils.getDate(stopDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[设备启用日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鍚敤鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 保修到期日期
+					// 淇濅慨鍒版湡鏃ユ湡
 					String expireDate = changeToString(serCell38);
 					if (!expireDate.isEmpty()) {
 						try {
 							deviceExtend.setExpireDate(DateUtils.getDate(expireDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[保修到期日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾淇濅慨鍒版湡鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 上次巡检日期
+					// 涓婃宸℃鏃ユ湡
 					String lastPmDate = changeToString(serCell39);
 					if (!lastPmDate.isEmpty()) {
 						try {
 							deviceExtend.setLastPmDate(DateUtils.getDate(lastPmDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[上次巡检日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾涓婃宸℃鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 巡检到期日期
+					// 宸℃鍒版湡鏃ユ湡
 					String expirePmDate = changeToString(serCell40);
 					if (!expirePmDate.isEmpty()) {
 						try {
 							deviceExtend.setExpirePmDate(DateUtils.getDate(expirePmDate));
 						} catch (AppException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[巡检到期日期]格式输入错误，请输入“yyyy-mm-dd”格式的时间！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾宸℃鍒版湡鏃ユ湡]鏍煎紡杈撳叆閿欒锛岃杈撳叆鈥測yyy-mm-dd鈥濇牸寮忕殑鏃堕棿锛�'}";
 						}
 					}
 
-					// 巡检周期
+					// 宸℃鍛ㄦ湡
 					String patrolPeriod = changeToString(serCell41);
 					if (!patrolPeriod.isEmpty()) {
 						try {
 							deviceExtend.setPatrolPeriod(Integer.parseInt(patrolPeriod));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[巡检周期]输入的不是一个大于0的整数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾宸℃鍛ㄦ湡]杈撳叆鐨勪笉鏄竴涓ぇ浜�0鐨勬暣鏁帮紒'}";
 						}
 					}
 
-					// 入账成本
+					// 鍏ヨ处鎴愭湰
 					String price = changeToString(serCell42);
 					if (!price.isEmpty()) {
 						try {
 							deviceExtend.setPrice(Double.parseDouble(price));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[入账成本]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鍏ヨ处鎴愭湰]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 物业租赁费用
+					// 鐗╀笟绉熻祦璐圭敤
 					String governanceRent = changeToString(serCell43);
 					if (!governanceRent.isEmpty()) {
 						try {
 							deviceExtend.setGovernanceRent(Double.parseDouble(governanceRent));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[物业租赁费用]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鐗╀笟绉熻祦璐圭敤]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 物业管理费用
+					// 鐗╀笟绠＄悊璐圭敤
 					String governanceCost = changeToString(serCell44);
 					if (!governanceCost.isEmpty()) {
 						try {
 							deviceExtend.setGovernanceCost(Double.parseDouble(governanceCost));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[物业管理费用]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鐗╀笟绠＄悊璐圭敤]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 折旧年限
+					// 鎶樻棫骞撮檺
 					String depreciationLife = changeToString(serCell45);
 					if (!depreciationLife.isEmpty()) {
 						try {
 							deviceExtend.setDepreciationLife(Double.parseDouble(depreciationLife));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[折旧年限]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎶樻棫骞撮檺]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 通讯线路费用
+					// 閫氳绾胯矾璐圭敤
 					String netCost = changeToString(serCell46);
 					if (!netCost.isEmpty()) {
 						try {
 							deviceExtend.setNetCost(Double.parseDouble(netCost));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[通讯线路费用]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾閫氳绾胯矾璐圭敤]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 装修费用
+					// 瑁呬慨璐圭敤
 					String decoration = changeToString(serCell47);
 					if (!decoration.isEmpty()) {
 						try {
 							deviceExtend.setDecoration(Double.parseDouble(decoration));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[装修费用]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾瑁呬慨璐圭敤]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 电费
+					// 鐢佃垂
 					String powerCost = changeToString(serCell48);
 					if (!powerCost.isEmpty()) {
 						try {
 							deviceExtend.setPowerCost(Double.parseDouble(powerCost));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[电费]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鐢佃垂]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 装修摊销年限（年）
+					// 瑁呬慨鎽婇攢骞撮檺锛堝勾锛�
 					String decorationCost = changeToString(serCell49);
 					if (!decorationCost.isEmpty()) {
 						try {
 							deviceExtend.setDecorationCost(Double.parseDouble(decorationCost));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[装修摊销年限]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾瑁呬慨鎽婇攢骞撮檺]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 加钞维护费用
+					// 鍔犻挒缁存姢璐圭敤
 					String moneyCost = changeToString(serCell50);
 					if (!moneyCost.isEmpty()) {
 						try {
 							deviceExtend.setMoneyCost(Double.parseDouble(moneyCost));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[加钞维护费用]输入的不是一个小数！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鍔犻挒缁存姢璐圭敤]杈撳叆鐨勪笉鏄竴涓皬鏁帮紒'}";
 						}
 					}
 
-					// 资金成本利率
+					// 璧勯噾鎴愭湰鍒╃巼
 					String costInterest = changeToString(serCell51);
 					deviceExtend.setCostInterest(costInterest);
 
-					// 部署区域名称
+					// 閮ㄧ讲鍖哄煙鍚嶇О
 					String deployAreaNm = changeToString(serCell52);
 					if (deployAreaNm.length() > 33) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[部署区域名称]超出最大长度限制(33位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾閮ㄧ讲鍖哄煙鍚嶇О]瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(33浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 设备投资方代码
+					// 璁惧鎶曡祫鏂逛唬鐮�
 					String invstrInsIdCd = changeToString(serCell53);
 					if (invstrInsIdCd.length() > 8) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[设备投资方代码]超出最大长度限制(8位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾璁惧鎶曡祫鏂逛唬鐮乚瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(8浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 运行维护方代码
+					// 杩愯缁存姢鏂逛唬鐮�
 					String maintnInsIdCd = changeToString(serCell54);
 					if (maintnInsIdCd.length() > 8) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[运行维护方代码]超出最大长度限制(8位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾杩愯缁存姢鏂逛唬鐮乚瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(8浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 外卡受理
+					// 澶栧崱鍙楃悊
 					String frnAcptTp = changeToString(serCell55);
 					if (!frnAcptTp.isEmpty()) {
 						if (!("01".equals(frnAcptTp) || "02".equals(frnAcptTp) || "03".equals(frnAcptTp))) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "行[外卡受理]只能输入[01]、[02]、[03]，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾澶栧崱鍙楃悊]鍙兘杈撳叆[01]銆乕02]銆乕03]锛岃妫�鏌ワ紒'}";
 						}
 					}
 
-					// 终端渠道宣传
+					// 缁堢娓犻亾瀹ｄ紶
 					String termPublicizeChnl = changeToString(serCell56);
 					if (termPublicizeChnl.length() > 33) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[终端渠道宣传]超出最大长度限制(33位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁堢娓犻亾瀹ｄ紶]瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(33浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 终端通讯方式
+					// 缁堢閫氳鏂瑰紡
 					String termConnMd = changeToString(serCell57);
 					if (termConnMd.length() > 33) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[终端通讯方式]超出最大长度限制(33位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁堢閫氳鏂瑰紡]瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(33浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 扫码功能
+					// 鎵爜鍔熻兘
 					String scanIn = changeToString(serCell58);
 					if (!scanIn.isEmpty() && !("0".equals(scanIn) || "1".equals(scanIn))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[扫码功能]只能输入[0]或[1]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎵爜鍔熻兘]鍙兘杈撳叆[0]鎴朳1]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 磁条卡读取功能
+					// 纾佹潯鍗¤鍙栧姛鑳�
 					String magnReadIn = changeToString(serCell59);
 					if (!scanIn.isEmpty() && !("0".equals(magnReadIn) || "1".equals(magnReadIn))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[磁条卡读取功能]只能输入[0]或[1]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾纾佹潯鍗¤鍙栧姛鑳絔鍙兘杈撳叆[0]鎴朳1]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 接触式IC卡读取功能
+					// 鎺ヨЕ寮廔C鍗¤鍙栧姛鑳�
 					String contICIn = changeToString(serCell60);
 					if (!scanIn.isEmpty() && !("0".equals(contICIn) || "1".equals(contICIn))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[接触式IC卡读取功能]只能输入[0]或[1]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鎺ヨЕ寮廔C鍗¤鍙栧姛鑳絔鍙兘杈撳叆[0]鎴朳1]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 非接IC卡读取功能
+					// 闈炴帴IC鍗¤鍙栧姛鑳�
 					String contlessIcIn = changeToString(serCell61);
 					if (!scanIn.isEmpty() && !("0".equals(contlessIcIn) || "1".equals(contlessIcIn))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[非接IC卡读取功能]只能输入[0]或[1]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾闈炴帴IC鍗¤鍙栧姛鑳絔鍙兘杈撳叆[0]鎴朳1]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 无卡支付功能
+					// 鏃犲崱鏀粯鍔熻兘
 					String ncardPayIn = changeToString(serCell62);
 					if (!scanIn.isEmpty() && !("0".equals(ncardPayIn) || "1".equals(ncardPayIn))) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[无卡支付功能]只能输入[0]或[1]，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾鏃犲崱鏀粯鍔熻兘]鍙兘杈撳叆[0]鎴朳1]锛岃妫�鏌ワ紒'}";
 					}
 
-					// 取款箱报警张数
+					// 鍙栨绠辨姤璀﹀紶鏁�
 					String cashboxLimit = changeToString(serCell63);
 					if (!cashboxLimit.isEmpty()) {
 						try {
 							device.setCashboxLimit(Integer.parseInt(cashboxLimit));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "[取款箱报警张数]输入的不是数字，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "[鍙栨绠辨姤璀﹀紶鏁癩杈撳叆鐨勪笉鏄暟瀛楋紝璇锋鏌ワ紒'}";
 						}
 					}
 
-					// 存款箱报警张数
+					// 瀛樻绠辨姤璀﹀紶鏁�
 					String cashboxDeposit = changeToString(serCell64);
 					if (!cashboxDeposit.isEmpty()) {
 						try {
 							device.setCashboxDeposit(Integer.parseInt(cashboxDeposit));
 						} catch (NumberFormatException e) {
-							return "{'success':false,'content':'文件第" + (r + 1) + "[存款箱报警张数]输入的不是数字，请检查！'}";
+							return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "[瀛樻绠辨姤璀﹀紶鏁癩杈撳叆鐨勪笉鏄暟瀛楋紝璇锋鏌ワ紒'}";
 						}
 					}
 
-					// 终端业务功能
+					// 缁堢涓氬姟鍔熻兘
 					String termTranFun = changeToString(serCell65);
 					if (termTranFun.length() > 33) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[终端业务功能]超出最大长度限制(33位)，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾缁堢涓氬姟鍔熻兘]瓒呭嚭鏈�澶ч暱搴﹂檺鍒�(33浣�)锛岃妫�鏌ワ紒'}";
 					}
 
-					// 运营商
+					// 杩愯惀鍟�
 					String carrier = changeToString(serCell66);
 					if (carrier.length() > 20) {
-						return "{'success':false,'content':'文件第" + (r + 1) + "行[运营商]文本长度不能超过20，请检查！'}";
+						return "{'success':false,'content':'鏂囦欢绗�" + (r + 1) + "琛孾杩愯惀鍟哴鏂囨湰闀垮害涓嶈兘瓒呰繃20锛岃妫�鏌ワ紒'}";
 					}
 
 					UserSession userSession = (UserSession) request.getSession().getAttribute("SESSION_USER");
@@ -966,7 +967,7 @@ public class DeviceController {
 					deviceExtend.setManagerName(managerName);
 					deviceExtend.setApplyId(person);
 					deviceExtend.setApplyTime(new Date());
-					deviceExtend.setApplyRemark("数据导入");
+					deviceExtend.setApplyRemark("鏁版嵁瀵煎叆");
 					deviceExtend.setTermConnMd(termConnMd);
 					deviceExtend.setScanIn(scanIn);
 					deviceExtend.setMagnReadIn(magnReadIn);
@@ -1006,26 +1007,26 @@ public class DeviceController {
 					try {
 						devices.add(device);
 					} catch (Exception e) {
-						logger.error(String.format("后台处理出错,错误码[%s]", e));
+						logger.error(String.format("鍚庡彴澶勭悊鍑洪敊,閿欒鐮乕%s]", e));
 					}
 				}
 
-				// 当所有记录验证都通过时，则验证excel文件中记录是否有重复虚拟柜员号、终端号、ip、mac地址
-				// 该处算法设计思想：excel中第一条设备信息不管，第二条开始与第一条比较，第三条与第一条、第二条比较，以此类推。
+				// 褰撴墍鏈夎褰曢獙璇侀兘閫氳繃鏃讹紝鍒欓獙璇乪xcel鏂囦欢涓褰曟槸鍚︽湁閲嶅铏氭嫙鏌滃憳鍙枫�佺粓绔彿銆乮p銆乵ac鍦板潃
+				// 璇ュ绠楁硶璁捐鎬濇兂锛歟xcel涓涓�鏉¤澶囦俊鎭笉绠★紝绗簩鏉″紑濮嬩笌绗竴鏉℃瘮杈冿紝绗笁鏉′笌绗竴鏉°�佺浜屾潯姣旇緝锛屼互姝ょ被鎺ㄣ��
 				for (int i = 0; i < devices.size(); i++) {
 					for (int j = 0; j < i; j++) {
 						if (i > 0) {
 							if (devices.get(i).getDeviceExtend().getVirtual().equals(devices.get(j).getDeviceExtend().getVirtual())) {
-								return "{'success':false,'content':'文件第" + (j + 1) + "行和第" + (i + 1) + "行虚拟柜员号相同，请检查！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (j + 1) + "琛屽拰绗�" + (i + 1) + "琛岃櫄鎷熸煖鍛樺彿鐩稿悓锛岃妫�鏌ワ紒'}";
 							}
 							if (devices.get(i).getTerminalId().equals(devices.get(j).getTerminalId())) {
-								return "{'success':false,'content':'文件第" + (j + 1) + "行和第" + (i + 1) + "行终端号相同，请检查！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (j + 1) + "琛屽拰绗�" + (i + 1) + "琛岀粓绔彿鐩稿悓锛岃妫�鏌ワ紒'}";
 							}
 							if (devices.get(i).getIp().equals(devices.get(j).getIp())) {
-								return "{'success':false,'content':'文件第" + (j + 1) + "行和第" + (i + 1) + "行ip相同，请检查！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (j + 1) + "琛屽拰绗�" + (i + 1) + "琛宨p鐩稿悓锛岃妫�鏌ワ紒'}";
 							}
 							if (devices.get(i).getDeviceExtend().getMac().equals(devices.get(j).getDeviceExtend().getMac())) {
-								return "{'success':false,'content':'文件第" + (j + 1) + "行和第" + (i + 1) + "行MAC地址相同，请检查！'}";
+								return "{'success':false,'content':'鏂囦欢绗�" + (j + 1) + "琛屽拰绗�" + (i + 1) + "琛孧AC鍦板潃鐩稿悓锛岃妫�鏌ワ紒'}";
 							}
 						}
 					}
@@ -1036,25 +1037,25 @@ public class DeviceController {
 						deviceService.add(device);
 						successRows++;
 					} catch (Exception e) {
-						logger.error(String.format("后台处理出错,错误码[%s]", e));
-						return "{'success':false,'content':'成功导入" + successRows + "条，但在第" + (successRows + 2) + "行发生异常！'}";
+						logger.error(String.format("鍚庡彴澶勭悊鍑洪敊,閿欒鐮乕%s]", e));
+						return "{'success':false,'content':'鎴愬姛瀵煎叆" + successRows + "鏉★紝浣嗗湪绗�" + (successRows + 2) + "琛屽彂鐢熷紓甯革紒'}";
 					}
 				}
 				if (allRows - successRows - 1 == 0) {
-					return "{'success':true,'content':'导入成功" + successRows + "条," + "重复未导入:" + repeat + "条.失败:" + (allRows - successRows - 1 - repeat) + "'}";
+					return "{'success':true,'content':'瀵煎叆鎴愬姛" + successRows + "鏉�," + "閲嶅鏈鍏�:" + repeat + "鏉�.澶辫触:" + (allRows - successRows - 1 - repeat) + "'}";
 				} else {
-					return "{'success':true,'content':'导入成功" + successRows + "条," + "重复未导入:" + repeat + "条.失败:" + (allRows - successRows - 1 - repeat) + "条.重复的终端号为" + terminalIdStr.substring(0, terminalIdStr.length() - 1) + "。'}";
+					return "{'success':true,'content':'瀵煎叆鎴愬姛" + successRows + "鏉�," + "閲嶅鏈鍏�:" + repeat + "鏉�.澶辫触:" + (allRows - successRows - 1 - repeat) + "鏉�.閲嶅鐨勭粓绔彿涓�" + terminalIdStr.substring(0, terminalIdStr.length() - 1) + "銆�'}";
 				}
 			} catch (Exception ex) {
-				logger.error(String.format("后台处理出错,错误码[%s]", ex));
-				return "{'success':false,'content':'后台程序出现异常！'}";
+				logger.error(String.format("鍚庡彴澶勭悊鍑洪敊,閿欒鐮乕%s]", ex));
+				return "{'success':false,'content':'鍚庡彴绋嬪簭鍑虹幇寮傚父锛�'}";
 			}
 		}
 		return "{'success':true}";
 	}
 
 	/**
-	 * 将Cell对象转换成String类型（导入时调用）
+	 * 灏咰ell瀵硅薄杞崲鎴怱tring绫诲瀷锛堝鍏ユ椂璋冪敤锛�
 	 */
 	public String changeToString(Cell cell) {
 		String strCell = "";
@@ -1075,7 +1076,7 @@ public class DeviceController {
 	}
 
 	/**
-	 * 判断是否匹配正则表达式
+	 * 鍒ゆ柇鏄惁鍖归厤姝ｅ垯琛ㄨ揪寮�
 	 * 
 	 * @param regex
 	 * @param targetSting
